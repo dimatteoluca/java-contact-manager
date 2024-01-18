@@ -1,6 +1,7 @@
 package it.dimatteoluca;
 
 public class Persona {
+    
     // ATTRIBUTI
     private String nome;
     private String cognome;
@@ -17,7 +18,7 @@ public class Persona {
         eta = e;
     }
 
-    // FUNZIONI GET E SET
+    // GET E SET
     public String getNome() {
         return nome;
     }
@@ -57,4 +58,5 @@ public class Persona {
     public void setEta(int e) {
         eta = e;
     }
+
 }
