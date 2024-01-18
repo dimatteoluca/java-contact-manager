@@ -93,3 +93,8 @@ L’utente che dovrà provare l’applicazione dovrà in sequenza:
 4. eseguire Rubrica.jar
 
 ## Realizzazione
+
+VSC > Java: Create Java Project... > Maven > maven-archetype-quickstart > 1.4
+
+- Group ID: it.dimatteoluca
+- Artifact ID: java-contact-manager
