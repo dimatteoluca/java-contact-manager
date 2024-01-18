@@ -40,11 +40,11 @@ public class Rubrica {
 
         // Crea un modello per la tabella
         model = new DefaultTableModel();
-        model.addColumn("Nome");
-        model.addColumn("Cognome");
-        model.addColumn("Telefono");
+        model.addColumn("NOME");
+        model.addColumn("COGNOME");
+        model.addColumn("TELEFONO");
 
-        // Carica i dati dal file
+        // Carica i dati dal file di testo
         elenco = new Vector<Persona>();
         File file = new File("informazioni.txt");
         popolaElencoETabella(file);
@@ -56,10 +56,26 @@ public class Rubrica {
         JScrollPane scrollPane = new JScrollPane(table);
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
+        // Crea una JToolBar
+        JToolBar toolBar = new JToolBar();
+
         // Crea i bottoni
-        JButton nuovoButton = new JButton("Nuovo");
-        JButton modificaButton = new JButton("Modifica");
-        JButton eliminaButton = new JButton("Elimina");
+        ImageIcon addIcon = new ImageIcon(getClass().getResource("/images/add.png"));
+        JButton nuovoButton = new JButton(addIcon);
+        nuovoButton.setToolTipText("Aggiungi nuovo contatto");
+        ImageIcon editIcon = new ImageIcon(getClass().getResource("/images/edit.png"));
+        JButton modificaButton = new JButton(editIcon);
+        modificaButton.setToolTipText("Modifica contatto");
+        ImageIcon trashIcon = new ImageIcon(getClass().getResource("/images/trash.png"));
+        JButton eliminaButton = new JButton(trashIcon);
+        eliminaButton.setToolTipText("Elimina contatto");
+
+        // Aggiungi un componente invisibile che "spinge" i bottoni a destra
+        toolBar.add(Box.createHorizontalGlue());
+        // Aggiungi i bottoni alla JToolBar
+        toolBar.add(nuovoButton);
+        toolBar.add(modificaButton);
+        toolBar.add(eliminaButton);
 
         // Aggiungi i listener ai bottoni
         nuovoButton.addActionListener(new ActionListener() {
@@ -94,7 +110,7 @@ public class Rubrica {
                     JOptionPane.showMessageDialog(frame, "Per favore, seleziona una riga prima di premere 'Elimina'", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-                    int conferma = JOptionPane.showConfirmDialog(frame, "Eliminare la persona "+(String) model.getValueAt(rigaSelezionata, 0)+" "+(String) model.getValueAt(rigaSelezionata, 1)+"?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION);
+                    int conferma = JOptionPane.showConfirmDialog(frame, "Eliminare il contatto '"+(String) model.getValueAt(rigaSelezionata, 0)+" "+(String) model.getValueAt(rigaSelezionata, 1)+"'?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION);
                     if (conferma == JOptionPane.YES_OPTION) {
                         eliminaPersona((String) model.getValueAt(rigaSelezionata, 0), (String) model.getValueAt(rigaSelezionata, 1), (String) model.getValueAt(rigaSelezionata, 2));
                         aggiornaFile();
@@ -106,15 +122,11 @@ public class Rubrica {
             }
         });
 
-        // Crea un pannello per i bottoni e aggiungilo al frame
-        JPanel panel = new JPanel();
-        panel.add(nuovoButton);
-        panel.add(modificaButton);
-        panel.add(eliminaButton);
-        frame.getContentPane().add(panel, BorderLayout.SOUTH);
-
+        // Aggiungi la JToolBar al frame
+        frame.getContentPane().add(toolBar, BorderLayout.SOUTH);
         // Mostra il frame
         frame.setVisible(true);
+    
     }
 
     // METODI
@@ -124,7 +136,7 @@ public class Rubrica {
         int y = screenSize.height / 3;
         editorFrame = new JFrame("Editor Persona");
         editorFrame.setLocation(x * 5 / 4, y * 5 / 4);
-        editorFrame.setSize(x/2, y/2);
+        editorFrame.setSize(x/2, y*2/3);
 
         JPanel panel = new JPanel(new GridLayout(6, 2));
 
@@ -153,11 +165,16 @@ public class Rubrica {
         panel.add(new JLabel("Età:"));
         panel.add(etaField);
 
-        JButton salvaButton = new JButton("Salva");
+        ImageIcon diskIcon = new ImageIcon(getClass().getResource("/images/disk.png"));
+        JButton salvaButton = new JButton(diskIcon);
+        salvaButton.setToolTipText("Salva contatto");
         salvaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (personaSelezionata != null) {
+                if (nomeField.getText().equals("") || cognomeField.getText().equals("") || indirizzoField.getText().equals("") || telefonoField.getText().equals("") || etaField.getText().equals("")) {
+                    JOptionPane.showMessageDialog(editorFrame, "Non è possibile lasciare campi vuoti", "Attenzione", JOptionPane.WARNING_MESSAGE);
+                }
+                else if (personaSelezionata != null) {
                     for (Persona persona : elenco) {
                         if (persona.getNome().equals(personaSelezionata.getNome()) && persona.getCognome().equals(personaSelezionata.getCognome()) && persona.getTelefono().equals(personaSelezionata.getTelefono())) {
                             persona.setNome(nomeField.getText());
@@ -181,7 +198,9 @@ public class Rubrica {
             }
         });
 
-        JButton annullaButton = new JButton("Annulla");
+        ImageIcon undoIcon = new ImageIcon(getClass().getResource("/images/undo.png"));
+        JButton annullaButton = new JButton(undoIcon);
+        annullaButton.setToolTipText("Annulla operazione");
         annullaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -189,11 +208,20 @@ public class Rubrica {
             }
         });
 
-        panel.add(salvaButton);
-        panel.add(annullaButton);
+        // Crea una JToolBar
+        JToolBar toolBar = new JToolBar();
+
+        // Aggiungi un componente invisibile che "spinge" i bottoni a destra
+        toolBar.add(Box.createHorizontalGlue());
+        // Aggiungi i bottoni alla JToolBar
+        toolBar.add(salvaButton);
+        toolBar.add(annullaButton);
 
         editorFrame.getContentPane().add(panel);
+        // Aggiungi la JToolBar al frame
+        editorFrame.getContentPane().add(toolBar, BorderLayout.SOUTH);
         editorFrame.setVisible(true);
+    
     }
 
     private void popolaElencoETabella(File file) {
