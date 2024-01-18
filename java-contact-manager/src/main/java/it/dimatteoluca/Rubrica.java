@@ -35,9 +35,8 @@ public class Rubrica {
         int x = screenSize.width / 3;
         int y = screenSize.height / 3;
         frame.setLocation(x, y);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.setSize(600, 400);
         frame.setSize(x, y);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Crea un modello per la tabella
         model = new DefaultTableModel();
