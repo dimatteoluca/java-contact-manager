@@ -60,11 +60,14 @@ public class Rubrica {
         JToolBar toolBar = new JToolBar();
 
         // Crea i bottoni
-        JButton nuovoButton = new JButton(new ImageIcon("src/main/resources/images/add.png"));
+        ImageIcon addIcon = new ImageIcon(getClass().getResource("/images/add.png"));
+        JButton nuovoButton = new JButton(addIcon);
         nuovoButton.setToolTipText("Aggiungi nuovo contatto");
-        JButton modificaButton = new JButton(new ImageIcon("src/main/resources/images/edit.png"));
+        ImageIcon editIcon = new ImageIcon(getClass().getResource("/images/edit.png"));
+        JButton modificaButton = new JButton(editIcon);
         modificaButton.setToolTipText("Modifica contatto");
-        JButton eliminaButton = new JButton(new ImageIcon("src/main/resources/images/trash.png"));
+        ImageIcon trashIcon = new ImageIcon(getClass().getResource("/images/trash.png"));
+        JButton eliminaButton = new JButton(trashIcon);
         eliminaButton.setToolTipText("Elimina contatto");
 
         // Aggiungi un componente invisibile che "spinge" i bottoni a destra
@@ -162,7 +165,8 @@ public class Rubrica {
         panel.add(new JLabel("Età:"));
         panel.add(etaField);
 
-        JButton salvaButton = new JButton(new ImageIcon("src/main/resources/images/disk.png"));
+        ImageIcon diskIcon = new ImageIcon(getClass().getResource("/images/disk.png"));
+        JButton salvaButton = new JButton(diskIcon);
         salvaButton.setToolTipText("Salva contatto");
         salvaButton.addActionListener(new ActionListener() {
             @Override
@@ -194,7 +198,8 @@ public class Rubrica {
             }
         });
 
-        JButton annullaButton = new JButton(new ImageIcon("src/main/resources/images/undo.png"));
+        ImageIcon undoIcon = new ImageIcon(getClass().getResource("/images/undo.png"));
+        JButton annullaButton = new JButton(undoIcon);
         annullaButton.setToolTipText("Annulla operazione");
         annullaButton.addActionListener(new ActionListener() {
             @Override
