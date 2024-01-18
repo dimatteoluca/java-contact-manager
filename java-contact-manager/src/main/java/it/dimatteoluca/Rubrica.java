@@ -40,9 +40,9 @@ public class Rubrica {
 
         // Crea un modello per la tabella
         model = new DefaultTableModel();
-        model.addColumn("Nome");
-        model.addColumn("Cognome");
-        model.addColumn("Telefono");
+        model.addColumn("NOME");
+        model.addColumn("COGNOME");
+        model.addColumn("TELEFONO");
 
         // Carica i dati dal file di testo
         elenco = new Vector<Persona>();
@@ -167,7 +167,10 @@ public class Rubrica {
         salvaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (personaSelezionata != null) {
+                if (nomeField.getText().equals("") || cognomeField.getText().equals("") || indirizzoField.getText().equals("") || telefonoField.getText().equals("") || etaField.getText().equals("")) {
+                    JOptionPane.showMessageDialog(editorFrame, "Non è possibile lasciare campi vuoti", "Attenzione", JOptionPane.WARNING_MESSAGE);
+                }
+                else if (personaSelezionata != null) {
                     for (Persona persona : elenco) {
                         if (persona.getNome().equals(personaSelezionata.getNome()) && persona.getCognome().equals(personaSelezionata.getCognome()) && persona.getTelefono().equals(personaSelezionata.getTelefono())) {
                             persona.setNome(nomeField.getText());
