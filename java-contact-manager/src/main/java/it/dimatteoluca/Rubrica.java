@@ -298,11 +298,21 @@ public class Rubrica {
         }
     }
 
-    // Ordina l'elenco in ordine alfabetico in base al nome
+    // Ordina l'elenco in ordine alfabetico in base a nome, cognome, telefono
     private void ordinaElenco() {
         Collections.sort(elenco, new Comparator<Persona>() {
             public int compare(Persona p1, Persona p2) {
-                return p1.getNome().compareTo(p2.getNome());
+                int nomeCompare = p1.getNome().compareToIgnoreCase(p2.getNome());
+                int cognomeCompare = p1.getCognome().compareToIgnoreCase(p2.getCognome());
+                if (nomeCompare != 0) {
+                    return nomeCompare;
+                }
+                else if (cognomeCompare != 0) {
+                    return cognomeCompare;
+                }
+                else {
+                    return p1.getTelefono().compareToIgnoreCase(p2.getTelefono());
+                }
             }
         });
     }
