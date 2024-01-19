@@ -92,7 +92,7 @@ public class Rubrica {
                 int rigaSelezionata = table.getSelectedRow();
 
                 if (rigaSelezionata == -1) {
-                    JOptionPane.showMessageDialog(frame, "Per favore, seleziona una riga prima di premere 'Modifica'", "Attenzione", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Per favore, seleziona un contatto prima di premere 'Modifica'.", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     Persona persona = trovaPersona((String) model.getValueAt(rigaSelezionata, 0), (String) model.getValueAt(rigaSelezionata, 1), (String) model.getValueAt(rigaSelezionata, 2));
@@ -107,7 +107,7 @@ public class Rubrica {
             public void actionPerformed(ActionEvent e) {
                 int rigaSelezionata = table.getSelectedRow();
                 if (rigaSelezionata == -1) {
-                    JOptionPane.showMessageDialog(frame, "Per favore, seleziona una riga prima di premere 'Elimina'", "Attenzione", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Per favore, seleziona un contatto prima di premere 'Elimina'.", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     int conferma = JOptionPane.showConfirmDialog(frame, "Eliminare il contatto '"+(String) model.getValueAt(rigaSelezionata, 0)+" "+(String) model.getValueAt(rigaSelezionata, 1)+"'?", "Conferma eliminazione", JOptionPane.YES_NO_OPTION);
@@ -171,30 +171,46 @@ public class Rubrica {
         salvaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nomeField.getText().equals("") || cognomeField.getText().equals("") || indirizzoField.getText().equals("") || telefonoField.getText().equals("") || etaField.getText().equals("")) {
-                    JOptionPane.showMessageDialog(editorFrame, "Non è possibile lasciare campi vuoti", "Attenzione", JOptionPane.WARNING_MESSAGE);
-                }
-                else if (personaSelezionata != null) {
-                    for (Persona persona : elenco) {
-                        if (persona.getNome().equals(personaSelezionata.getNome()) && persona.getCognome().equals(personaSelezionata.getCognome()) && persona.getTelefono().equals(personaSelezionata.getTelefono())) {
-                            persona.setNome(nomeField.getText());
-                            persona.setCognome(cognomeField.getText());
-                            persona.setIndirizzo(indirizzoField.getText());
-                            persona.setTelefono(telefonoField.getText());
-                            persona.setEta(Integer.parseInt(etaField.getText()));
-                            break;
-                        }
+                try {
+                    if (nomeField.getText().equals("") || cognomeField.getText().equals("") || indirizzoField.getText().equals("") || telefonoField.getText().equals("") || etaField.getText().equals("")) {
+                        throw new EccezionePersonalizzata("Non è possibile lasciare campi vuoti.");
                     }
-                    personaSelezionata = null;
+                    else if (nomeField.getText().contains(";") || cognomeField.getText().contains(";") || indirizzoField.getText().contains(";") || telefonoField.getText().contains(";") || etaField.getText().contains(";")) {
+                        throw new EccezionePersonalizzata("Non è possibile utilizzare il carattere ';' nei campi dati.");
+                    }
+                    else if (!telefonoField.getText().matches("\\+?\\d+")) {
+                        throw new EccezionePersonalizzata("Il numero di telefono deve essere una sequenza\n" + //
+                                "di cifre eventualmente preceduta dal carattere '+'.");
+                    }
+                    else if (Integer.parseInt(etaField.getText()) < 0) {
+                        throw new EccezionePersonalizzata("L'età deve essere un numero intero positivo.");
+                    }
+                    else if (personaSelezionata != null) {
+                        for (Persona persona : elenco) {
+                            if (persona.getNome().equals(personaSelezionata.getNome()) && persona.getCognome().equals(personaSelezionata.getCognome()) && persona.getTelefono().equals(personaSelezionata.getTelefono())) {
+                                persona.setNome(nomeField.getText());
+                                persona.setCognome(cognomeField.getText());
+                                persona.setIndirizzo(indirizzoField.getText());
+                                persona.setTelefono(telefonoField.getText());
+                                persona.setEta(Integer.parseInt(etaField.getText()));
+                                break;
+                            }
+                        }
+                        personaSelezionata = null;
+                    }
+                    else {
+                        elenco.add(new Persona(nomeField.getText(), cognomeField.getText(), indirizzoField.getText(), telefonoField.getText(), Integer.parseInt(etaField.getText())));
+                    }
+                    ordinaElenco();
+                    aggiornaFile();
+                    model.setRowCount(0);
+                    popolaTabella();
+                    editorFrame.dispose();
+                } catch (EccezionePersonalizzata ex) {
+                    JOptionPane.showMessageDialog(editorFrame, ex.getMessage(), "Attenzione", JOptionPane.WARNING_MESSAGE);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(editorFrame, "L'età deve essere un numero.", "Attenzione", JOptionPane.WARNING_MESSAGE);
                 }
-                else {
-                    elenco.add(new Persona(nomeField.getText(), cognomeField.getText(), indirizzoField.getText(), telefonoField.getText(), Integer.parseInt(etaField.getText())));
-                }
-                ordinaElenco();
-                aggiornaFile();
-                model.setRowCount(0);
-                popolaTabella();
-                editorFrame.dispose();
             }
         });
 
